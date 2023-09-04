@@ -1,10 +1,11 @@
-/*INTEGRANTES: RICARDO SANTANA / JAVIER MONTOYA
-  RUTS: 21213874-6 / 21519157-5 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
+
+//Definicion de la estructura Libro con sus componentes
+
 typedef struct Libro {
   char titulo[51];
   char autor[21];
@@ -18,69 +19,49 @@ typedef struct Libro {
 // ————  ꒰ Funciones del libro ꒱  ————
 
 void registrarLibro(List* lista){
+  //Asignacion de memoria al nuevo libro
   Libro* nuevo = (Libro*) malloc(sizeof(Libro));
   if (nuevo == NULL) {
     printf("No se pudo reservar memoria para el libro\n");
     return;
   }
-
+  //Asignacion de memoria a la cola de reservas 
   nuevo->reservas = createList();
   if (nuevo->reservas == NULL) {
     printf("No se pudo crear la lista de reservas\n");
     free(nuevo);
     return;
   }
-  char *palabra = malloc(sizeof(char) * 100);
-  if (palabra == NULL){
-    printf("Error al asignar memoria dinamica");
-    exit(1);
-  }
-  while (1){
-    scanf("Ingrese el titulo del libro: %s", palabra);
-    if (strlen(palabra) < 0 && strlen(palabra) >51) break;
-  }
-  strcpy(nuevo->titulo,palabra);
+  //Lectura de datos para el nuevo libro
+  printf("Ingrese el titulo del libro: ");
+  scanf("%s", nuevo->titulo);
+  printf("Ingrese el autor del libro: ");
+  scanf("%s", nuevo->autor);
+  printf("Ingrese el genero del libro: ");
+  scanf("%s", nuevo->genero);
+  printf("Ingrese el ISBN del libro: ");
+  scanf("%s", nuevo->isbn);
+  printf("Ingrese la ubicacion del libro: ");
+  scanf("%s", nuevo->ubicacion);
 
-  while (1){
-    scanf("Ingrese el autor del libro: %s", palabra);
-    if (strlen(palabra) < 0 && strlen(palabra) >51) break;
-  }
-  strcpy(nuevo->autor,palabra);
-
-  while (1){
-    scanf("Ingrese el genero del libro: %s", palabra);
-    if (strlen(palabra) < 0 && strlen(palabra) >51) break;
-  }
-  strcpy(nuevo->genero,palabra);
-
-  while (1){
-    scanf("Ingrese el isbn del libro: %s", palabra);
-    if (strlen(palabra) < 0 && strlen(palabra) >51) break;
-  }
-  strcpy(nuevo->isbn,palabra);
-  
-  while (1){
-    scanf("Ingrese la ubicacion del libro: %s", palabra);
-    if (strlen(palabra) < 0 && strlen(palabra) >51) break;
-  }
-  strcpy(nuevo->ubicacion,palabra);
-
-  free(palabra);
-  
   strcpy(nuevo->estado, "Disponible");
-
+  //Adicion del libro a la lista
   pushBack(lista, nuevo);
 }
 
 void mostrarLibro(List* lista) {
-  char isbn[14];
-  printf("Ingrese el ISBN del libro: ");
-  scanf(" %[^\n]", isbn);
+  char title[51];
+  char author[21];
+  printf("Ingrese el titulo del libro: ");
+  scanf(" %[^\n]", title);
+  printf("Ingrese el autor del libro");
+  scanf(" %[^\n]", author);
 
   Libro* aux = firstList(lista);
   while (aux != NULL) {
-   
-    if (strcmp(isbn, aux->isbn) == 0) {
+
+    //Busqueda en caso de coincidir el titulo y el autor
+    if (strcmp(title, aux->titulo) == 0 && strcmp(author, aux->autor) == 0) {
       
       printf("=========LIBRO==========\n");
       printf("Titulo: %s\n", aux->titulo);
@@ -89,7 +70,8 @@ void mostrarLibro(List* lista) {
       printf("ISBN: %s\n", aux->isbn);
       printf("Ubicacion: %s\n", aux->ubicacion);
       printf("Estado: %s\n", aux->estado);
-     
+
+      //Si existe una cola de reservas se imprime la informacion
       if (firstList(aux->reservas) != NULL) {
         printf("Reservas:\n");
         char* estudiante = firstList(aux->reservas);
@@ -104,8 +86,9 @@ void mostrarLibro(List* lista) {
     aux = nextList(lista);
   }
 
-  printf("No se encontró ningún libro con ese ISBN\n");
+  printf("No se encontró ningún que coincidencia con su busqueda\n");
 }
+
 
 void mostrarBiblioteca(List* lista) {
   int cont = 1;
@@ -128,11 +111,14 @@ void mostrarBiblioteca(List* lista) {
 void reservarLibro(List* lista) {
   char tituloAux[51];
   char autorAux[21];
+  
   printf("Ingrese el titulo del libro: ");
   scanf(" %[^\n]", &tituloAux);
   printf("Ingrese el autor del libro: ");
   scanf(" %[^\n]",&autorAux);
+  
   Libro* aux = firstList(lista);
+  
   while(aux!=NULL){
     if(strcmp(tituloAux,aux->titulo)==0 &&strcmp(autorAux,aux->autor)==0){
       char estudiante[51];
@@ -151,11 +137,14 @@ void reservarLibro(List* lista) {
 void cancelarReserva(List* lista) {
   char tituloAux[51];
   char autorAux[21];
+  
   printf("Ingrese el titulo del libro");
   scanf(" %[^\n]", &tituloAux);
   printf("Ingrese el autor del libro: ");
   scanf(" %[^\n]",&autorAux);
+  
   Libro* aux = firstList(lista);
+  
   while(aux!=NULL){
     if(strcmp(tituloAux,aux->titulo)==0 &&strcmp(autorAux,aux->autor)==0){
       char estudiante[51];
